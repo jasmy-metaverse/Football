@@ -45,6 +45,7 @@ import IconButton from '@etherealengine/ui/src/primitives/mui/IconButton'
 
 import Button from '../../../../common/components/Button'
 import { NotificationService } from '../../../../common/services/NotificationService'
+import { isJsonString } from '../../../../components/UserMediaWindow'
 import { SocialMenus } from '../../../../networking/NetworkInstanceProvisioning'
 import { FriendService, FriendState } from '../../../../social/services/FriendService'
 import { AvatarMenus } from '../../../../systems/AvatarUISystem'
@@ -140,7 +141,7 @@ const FriendsMenu = ({ defaultSelectedTab }: Props): JSX.Element => {
             <Box key={value.id} display="flex" alignItems="center" m={2} gap={1.5}>
               <Avatar alt={value.name} imageSrc={getUserAvatarThumbnail(value.id as UserId)} size={50} />
 
-              <Text flex={1}>{value.name}</Text>
+              <Text flex={1}>{isJsonString(value.name) ? JSON.parse(value.name).name : value.name}</Text>
 
               {value.relationType === 'friend' && (
                 <IconButton

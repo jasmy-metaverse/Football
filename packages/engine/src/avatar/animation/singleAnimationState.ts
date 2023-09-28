@@ -42,6 +42,16 @@ export function enterSingleAnimationState(state: SingleAnimationState, prevState
   fadeOutAnimationStateActions(prevState)
   const { action } = state
   action.reset()
+
+  if (
+    prevState.name === 'DANCE1' ||
+    prevState.name === 'DANCE2' ||
+    prevState.name === 'DANCE3' ||
+    prevState.name === 'DANCE4'
+  ) {
+    localStorage.setItem('dynamic', prevState.name)
+  }
+
   if (state.loop) {
     action.setLoop(LoopRepeat, Infinity).fadeIn(0.1).play()
   } else {

@@ -23,12 +23,22 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
+import { RigidBody, Vector3 as VT } from '@dimforge/rapier3d-compat'
 import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { Mesh } from 'three'
 
+import { EditorControlFunctions } from '@etherealengine/editor/src/functions/EditorControlFunctions'
+import { AssetLoader } from '@etherealengine/engine/src/assets/classes/AssetLoader'
 import { AudioEffectPlayer } from '@etherealengine/engine/src/audio/systems/MediaSystem'
 import { changeAvatarAnimationState } from '@etherealengine/engine/src/avatar/animation/AvatarAnimationGraph'
-import { AvatarStates } from '@etherealengine/engine/src/avatar/animation/Util'
+import { AvatarAnimations, AvatarStates } from '@etherealengine/engine/src/avatar/animation/Util'
+import { AnimationManager } from '@etherealengine/engine/src/avatar/AnimationManager'
+import { AvatarComponent } from '@etherealengine/engine/src/avatar/components/AvatarComponent'
 import { Engine } from '@etherealengine/engine/src/ecs/classes/Engine'
+import { Entity } from '@etherealengine/engine/src/ecs/classes/Entity'
+import { getComponent } from '@etherealengine/engine/src/ecs/functions/ComponentFunctions'
+import { TransformComponent } from '@etherealengine/engine/src/transform/components/TransformComponent'
 import Button from '@etherealengine/ui/src/primitives/mui/Button'
 import Icon from '@etherealengine/ui/src/primitives/mui/Icon'
 
@@ -38,8 +48,16 @@ import { PopupMenuServices } from '../PopupMenuService'
 import styles from './EmoteMenu.module.scss'
 
 const MAX_EMOTE_PER_PAGE = 6
-const MIN_EMOTE_PER_PAGE = 5
+const MIN_EMOTE_PER_PAGE = 1
 const getEmotePerPage = () => (window.innerWidth > 768 ? MAX_EMOTE_PER_PAGE : MIN_EMOTE_PER_PAGE)
+
+const CLAP_DURATION = 1200 as const
+const CRY_DURATION = 6300 as const
+const KICK_DURATION = 600 as const
+const KISS_DURATION = 4599 as const
+const WAVE_DURATION = 5133 as const
+const LAUGH_DURATION = 9800 as const
+const DEFEAT_DURATION = 6766 as const
 
 export const useEmoteMenuHooks = () => {
   const [page, setPage] = useState(0)
@@ -53,74 +71,119 @@ export const useEmoteMenuHooks = () => {
   let menuItemRadius = menuItemWidth / 2
   let effectiveRadius = menuRadius - menuItemRadius - menuPadding / 2
 
-  let [items, setItems] = useState([
-    {
-      body: <img src="/static/Wave.svg" alt="Wave" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.WAVE)
+  const findAvatarAnimationDuration = (avatarAnimation: string): number => {
+    let animationDuration
+
+    if (avatarAnimation === AvatarStates.CLAP) {
+      animationDuration = CLAP_DURATION
+    } else if (avatarAnimation === AvatarStates.CRY) {
+      animationDuration = CRY_DURATION
+    } else if (avatarAnimation === AvatarStates.KICK) {
+      animationDuration = KICK_DURATION
+    } else if (avatarAnimation === AvatarStates.KISS) {
+      animationDuration = KISS_DURATION
+    } else if (avatarAnimation === AvatarStates.WAVE) {
+      animationDuration = WAVE_DURATION
+    } else if (avatarAnimation === AvatarStates.LAUGH) {
+      animationDuration = LAUGH_DURATION
+    } else if (avatarAnimation === AvatarStates.DEFEAT) {
+      animationDuration = DEFEAT_DURATION
+    }
+
+    return animationDuration
+  }
+
+  const reRunDynamicAnimation = (animationDuration: number) => {
+    setTimeout(() => {
+      if (localStorage.getItem('dynamic') === AvatarStates.DANCE1) {
+        runAnimation(AvatarStates.DANCE1)
+        localStorage.removeItem('dynamic')
+      } else if (localStorage.getItem('dynamic') === AvatarStates.DANCE2) {
+        runAnimation(AvatarStates.DANCE2)
+        localStorage.removeItem('dynamic')
+      } else if (localStorage.getItem('dynamic') === AvatarStates.DANCE3) {
+        runAnimation(AvatarStates.DANCE3)
+        localStorage.removeItem('dynamic')
+      } else if (localStorage.getItem('dynamic') === AvatarStates.DANCE4) {
+        runAnimation(AvatarStates.DANCE4)
+        localStorage.removeItem('dynamic')
       }
-    },
-    {
-      body: <img src="/static/clap1.svg" alt="Clap" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.CLAP)
+    }, animationDuration)
+  }
+
+  // The function for ball movement while kicking
+  const kickFunction = (delay: number = 0) => {
+    setTimeout(() => {
+      const world = Engine.instance.physicsWorld
+      const ball = world.bodies.map.data.find((arr) => arr.isDynamic()) as RigidBody
+      const bT = getComponent(ball.userData.entity as Entity, TransformComponent).position
+      const entity = Engine.instance.localClientEntity
+      const aT = getComponent(entity, TransformComponent).position
+      const forcePower = process.env.VITE_FORCE_POWER
+      const dx = bT.x - aT.x
+      const dz = bT.z - aT.z
+      const distance = Math.sqrt(dx * dx + dz * dz)
+      if (distance < parseFloat(process.env.VITE_KICK_DISTANCE)) {
+        const forceY = (1.7 - distance) * (forcePower / 3)
+        const absSum = Math.abs(dx) + Math.abs(dz)
+        const forceX = (dx / absSum) * forcePower
+        const forceZ = (dz / absSum) * forcePower
+        const force = new VT(forceX, forceY, forceZ)
+        ball.applyImpulse(force, true)
       }
-    },
+    }, delay)
+  }
+
+  //Facial expression code starts
+  const changeTexture = async (texture: string) => {
+    const entity = Engine.instance.localClientEntity
+    const avatar = getComponent(entity, AvatarComponent)
+    const hier = avatar.model?.children[0].children[0].children[0].children.find((child) => child.name === 'head')
+    const id = hier?.uuid
+    const mesh = hier as Mesh
+    const preMap = mesh.material.map
+    const prop = await AssetLoader.loadAsync(texture)
+    EditorControlFunctions.modifyMaterial([id], mesh.material.uuid, [{ ['map']: prop }])
+  }
+  //Facial expression code ends
+
+  const runStaticAnimation = (avatarAnimation: string) => {
+    runAnimation(avatarAnimation)
+    switch (avatarAnimation) {
+      case 'LAUGH':
+        changeTexture(`${process.env.VITE_FILE_SERVER}/projects/default-project/assets/SGT_diffse_mewotumuru_2.png`)
+        break
+      case 'CRY':
+        changeTexture(`${process.env.VITE_FILE_SERVER}/projects/default-project/assets/SGT_diffse_naki_2.png`)
+        break
+      case 'DEFEAT':
+        changeTexture(`${process.env.VITE_FILE_SERVER}/projects/default-project/assets/SGT_diffse_kandou_2.png`)
+        break
+      case 'WAVE':
+        changeTexture(`${process.env.VITE_FILE_SERVER}/projects/default-project/assets/SGT_diffse_kirakira_2.png`)
+        break
+      case 'CLAP':
+        changeTexture(`${process.env.VITE_FILE_SERVER}/projects/default-project/assets/SGT_diffse_yorokobi_2.png`)
+        break
+    }
+    const animationDuration: number = findAvatarAnimationDuration(avatarAnimation)
+    reRunDynamicAnimation(animationDuration)
+  }
+
+  const kickItem = [
     {
-      body: <img src="/static/Dance1.svg" alt="Dance 1" />,
+      body: <img src="/static/Kick_white 1.svg" alt="Kick" />, // TODO: Icon need to be changed
       containerProps: {
-        onClick: () => runAnimation(AvatarStates.DANCE1)
-      }
-    },
-    {
-      body: <img src="/static/Dance2.svg" alt="Dance 2" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.DANCE2)
-      }
-    },
-    {
-      body: <img src="/static/Dance3.svg" alt="Dance 3" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.DANCE3)
-      }
-    },
-    {
-      body: <img src="/static/Dance4.svg" alt="Dance 4" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.DANCE4)
-      }
-    },
-    {
-      body: <img src="/static/Kiss.svg" alt="Kiss" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.KISS)
-      }
-    },
-    {
-      body: <img src="/static/Cry.svg" alt="Cry" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.CRY)
-      }
-    },
-    {
-      body: <img src="/static/Laugh.svg" alt="Laugh" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.LAUGH)
-      }
-    },
-    {
-      body: <img src="/static/Defeat.svg" alt="Defeat" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.DEFEAT)
-      }
-    },
-    {
-      body: <img src="/static/restart.svg" alt="Reset" />,
-      containerProps: {
-        onClick: () => runAnimation(AvatarStates.LOCOMOTION)
+        onClick: () => {
+          runStaticAnimation(AvatarStates.KICK)
+          kickFunction()
+        }
       }
     }
-  ])
+  ]
+  const [items, setItems] = useState<any>(kickItem)
+
+  // two sets of emotion animation for two different world ends here
 
   const calculateMenuRadius = () => {
     setImgPerPage(getEmotePerPage())

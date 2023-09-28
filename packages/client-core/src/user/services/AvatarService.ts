@@ -98,9 +98,57 @@ export const AvatarService = {
         $limit: AVATAR_PAGE_LIMIT
       }
     })) as Paginated<AvatarInterface>
+
+
     dispatchAction(
-      AvatarActions.updateAvatarListAction({ avatarList: result.data, search, skip: result.skip, total: result.total })
+      AvatarActions.updateAvatarListAction({
+        avatarList: result.data,
+        search,
+        skip: result.skip,
+        total: result.total
+      })
     )
+  },
+
+  async newFetchAvatarList2(search?: string, incDec?: 'increment' | 'decrement') {
+    const skip = getState(AvatarState).skip
+    const newSkip =
+      incDec === 'increment' ? skip + AVATAR_PAGE_LIMIT : incDec === 'decrement' ? skip - AVATAR_PAGE_LIMIT : skip
+    const result = (await Engine.instance.api.service('avatar').find({
+      query: {
+        search,
+        $skip: newSkip,
+        $limit: AVATAR_PAGE_LIMIT
+      }
+    })) as Paginated<AvatarInterface>
+
+
+    dispatchAction(
+      AvatarActions.updateAvatarListAction({
+        search,
+        skip: result.skip,
+        total: result.total
+      })
+    )
+
+
+  },
+  async newFetchAvatarList3(search?: string, incDec?: 'increment' | 'decrement') {
+    const skip = getState(AvatarState).skip
+    const newSkip =
+      incDec === 'increment' ? skip + AVATAR_PAGE_LIMIT : incDec === 'decrement' ? skip - AVATAR_PAGE_LIMIT : skip
+    const result = (await Engine.instance.api.service('avatar').find({
+      query: {
+        search,
+        $skip: newSkip,
+        $limit: AVATAR_PAGE_LIMIT
+      }
+    })) as Paginated<AvatarInterface>
+
+
+
+    // eslint-disable-next-line prefer-const
+
   },
 
   async patchAvatar(

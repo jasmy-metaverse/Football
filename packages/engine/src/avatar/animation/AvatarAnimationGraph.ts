@@ -204,6 +204,22 @@ export function createAvatarAnimationGraph(
     clamp: true
   }
 
+  const kickState: SingleAnimationState = {
+    name: AvatarStates.KICK,
+    type: 'SingleAnimationState',
+    action: getAnimationAction(AvatarAnimations.KICK, mixer),
+    loop: false,
+    clamp: true
+  }
+
+  const throwState: SingleAnimationState = {
+    name: AvatarStates.THROW,
+    type: 'SingleAnimationState',
+    action: getAnimationAction(AvatarAnimations.THROW, mixer),
+    loop: false,
+    clamp: true
+  }
+
   const laughState: SingleAnimationState = {
     name: AvatarStates.LAUGH,
     type: 'SingleAnimationState',
@@ -291,6 +307,8 @@ export function createAvatarAnimationGraph(
   graph.states[AvatarStates.DEFEAT] = defeatState
   graph.states[AvatarStates.DANCE1] = dance1State
   graph.states[AvatarStates.DANCE2] = dance2State
+  graph.states[AvatarStates.KICK] = kickState
+  graph.states[AvatarStates.THROW] = throwState
   graph.states[AvatarStates.DANCE3] = dance3State
   graph.states[AvatarStates.DANCE4] = dance4State
   graph.states[AvatarStates.SIT_ENTER] = sitEnterState
@@ -360,6 +378,23 @@ export function createAvatarAnimationGraph(
   graph.transitionRules[AvatarStates.KISS] = [
     {
       rule: compositeTransitionRule([movementTransitionRule, animationTimeTransitionRule(kissState.action, 0.9)], 'or'),
+      nextState: AvatarStates.LOCOMOTION
+    }
+  ]
+
+  graph.transitionRules[AvatarStates.KICK] = [
+    {
+      rule: compositeTransitionRule([movementTransitionRule, animationTimeTransitionRule(kickState.action, 0.9)], 'or'),
+      nextState: AvatarStates.LOCOMOTION
+    }
+  ]
+
+  graph.transitionRules[AvatarStates.THROW] = [
+    {
+      rule: compositeTransitionRule(
+        [movementTransitionRule, animationTimeTransitionRule(throwState.action, 0.9)],
+        'or'
+      ),
       nextState: AvatarStates.LOCOMOTION
     }
   ]

@@ -152,6 +152,12 @@ export class IdentityProvider<T = IdentityProviderInterface> extends Service<T> 
         break
       case 'auth0':
         break
+      case 'keycloak':
+        identityProvider = {
+          token: token,
+          type
+        }
+        break
     }
 
     // if userId is not defined, then generate userId

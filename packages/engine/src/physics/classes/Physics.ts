@@ -98,14 +98,25 @@ function createCollisionEventQueue() {
   return collisionEventQueue
 }
 
-function createRigidBody(entity: Entity, world: World, rigidBodyDesc: RigidBodyDesc, colliderDesc: ColliderDesc[]) {
+function createRigidBody(entity: Entity, world: World, rigidBodyDesc: RigidBodyDesc, colliderDesc: ColliderDesc[],dynamic: boolean = false) {
   if (hasComponent(entity, TransformComponent)) {
     const { position, rotation } = getComponent(entity, TransformComponent)
     rigidBodyDesc.translation = position
     rigidBodyDesc.rotation = rotation
+    if (dynamic && colliderDesc.length > 0) {
+      rigidBodyDesc.setLinearDamping(1.5)
+      rigidBodyDesc.setAngularDamping(1.5)
+    }
   }
   const body = world.createRigidBody(rigidBodyDesc)
-  colliderDesc.forEach((desc) => world.createCollider(desc, body))
+  colliderDesc.forEach((desc) => {
+    const collider = world.createCollider(desc, body)
+    if (dynamic && colliderDesc.length > 0) {
+      collider.setRadius(0.25)
+      collider.setRestitution(1.5)
+      collider.setMass(10)
+    }
+  })
 
   addComponent(entity, RigidBodyComponent, { body })
   const rigidBody = getComponent(entity, RigidBodyComponent)
@@ -335,11 +346,13 @@ function createRigidBodyForGroup(
       ? RigidBodyType[colliderDescOptions.bodyType]
       : colliderDescOptions.bodyType
 
+  let dynamic: boolean = false
   let rigidBodyDesc: RigidBodyDesc = undefined!
   switch (rigidBodyType) {
     case RigidBodyType.Dynamic:
     default:
       rigidBodyDesc = RigidBodyDesc.dynamic()
+      dynamic = true
       break
 
     case RigidBodyType.Fixed:
@@ -355,7 +368,7 @@ function createRigidBodyForGroup(
       break
   }
 
-  const body = createRigidBody(entity, world, rigidBodyDesc, colliderDescs)
+  const body = createRigidBody(entity, world, rigidBodyDesc, colliderDescs, dynamic)
 
   if (!getState(EngineState).isEditor)
     for (const mesh of meshesToRemove) {

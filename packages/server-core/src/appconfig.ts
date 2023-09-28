@@ -24,7 +24,7 @@ Ethereal Engine. All Rights Reserved.
 */
 
 import appRootPath from 'app-root-path'
-import * as chargebeeInst from 'chargebee'
+import chargebeeInst from 'chargebee'
 import dotenv from 'dotenv-flow'
 import path from 'path'
 import url from 'url'
@@ -238,7 +238,7 @@ const authentication = {
   service: 'identity-provider',
   entity: 'identity-provider',
   secret: process.env.AUTH_SECRET!,
-  authStrategies: ['jwt', 'discord', 'facebook', 'github', 'google', 'linkedin', 'twitter', 'didWallet'],
+  authStrategies: ['jwt', 'discord', 'facebook', 'github', 'google', 'linkedin', 'twitter', 'didWallet', 'keycloak'],
   jwtOptions: {
     expiresIn: '30 days'
   },
@@ -251,7 +251,8 @@ const authentication = {
     github: process.env.GITHUB_CALLBACK_URL || `${client.url}/auth/oauth/github`,
     google: process.env.GOOGLE_CALLBACK_URL || `${client.url}/auth/oauth/google`,
     linkedin: process.env.LINKEDIN_CALLBACK_URL || `${client.url}/auth/oauth/linkedin`,
-    twitter: process.env.TWITTER_CALLBACK_URL || `${client.url}/auth/oauth/twitter`
+    twitter: process.env.TWITTER_CALLBACK_URL || `${client.url}/auth/oauth/twitter`,
+    keycloak: process.env.KEYCLOAK_CALLBACK_URL || `${client.url}/auth/oauth/keycloak`
     // didWallet does not have a callback endpoint
   },
   oauth: {
@@ -260,7 +261,8 @@ const authentication = {
         server.hostname !== '127.0.0.1' && server.hostname !== 'localhost'
           ? server.hostname
           : server.hostname + ':' + server.port,
-      protocol: 'https'
+      protocol: 'https',
+      transport: 'session'
     },
     discord: {
       key: process.env.DISCORD_CLIENT_ID!,
@@ -283,6 +285,7 @@ const authentication = {
     google: {
       key: process.env.GOOGLE_CLIENT_ID!,
       secret: process.env.GOOGLE_CLIENT_SECRET!,
+      redirect_uri: process.env.GOOGLE_REDIRECT_URL!,
       scope: ['profile', 'email']
     },
     linkedin: {
@@ -293,6 +296,16 @@ const authentication = {
     twitter: {
       key: process.env.TWITTER_CLIENT_ID!,
       secret: process.env.TWITTER_CLIENT_SECRET!
+    },
+    keycloak: {
+      appid: process.env.KEYCLOAK_APP_ID!,
+      key: process.env.KEYCLOAK_CLIENT_ID!,
+      secret: process.env.KEYCLOAK_CLIENT_SECRET!,
+      scope: ['openid'],
+      redirect_uri: process.env.KEYCLOAK_REDIRECT_URL!,
+      authorize_url: process.env.KEYCLOAK_AUTHORIZE_URL!,
+      access_url: process.env.KEYCLOAK_ACCESS_URL!,
+      callback: process.env.KEYCLOAK_REDIRECT_URL!
     }
   }
 }

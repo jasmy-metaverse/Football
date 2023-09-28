@@ -488,3 +488,33 @@ vite-error-overlay {
     height: 100%;
   }
 }
+
+.termsAndConditions {
+  text-align: center;
+  margin-top: 20px;
+  padding: 5px;
+
+  a {
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+  }
+}
+
+.pdl-login-btn {
+  button {
+    border: none;
+    border-radius: 50%;
+  }
+
+  img {
+    border-radius: 50%;
+    box-shadow: 0 0 2px 7px #a0a0a0;
+    transition: all 0.5s ease-in-out;
+  }
+
+  img:hover {
+    border-radius: 50%;
+    box-shadow: 0 0 2px 7px #797979;
+  }
+}

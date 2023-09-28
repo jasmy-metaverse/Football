@@ -67,13 +67,25 @@ const AvatarDetailView = () => {
   const usersTyping = engineState.usersTyping[detailState.id.value].value
   const username = worldState?.userNames && user ? worldState.userNames[user.userId] : 'A user'
 
+  let userName = ''
+  let userEmail = ''
+  try {
+    const userInfo = JSON.parse(username)
+    userName = userInfo.name
+    userEmail = userInfo.email
+  } catch (e) {
+    userName = username
+  }
+
   return (
     <>
       <link href="https://fonts.googleapis.com/css?family=Lato:400" rel="stylesheet" type="text/css" />
       <style>{styleString}</style>
       {user && (
         <div className="avatarName">
-          {username}
+          {userName}
+          {/* <div>Name: {userName}</div>
+          {userEmail != '' ? <div>Email: {userEmail}</div> : null} */}
           {usersTyping && <h6 className="typingIndicator">{t('common:typing')}</h6>}
         </div>
       )}

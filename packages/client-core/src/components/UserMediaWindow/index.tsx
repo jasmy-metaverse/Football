@@ -26,7 +26,7 @@ Ethereal Engine. All Rights Reserved.
 import classNames from 'classnames'
 import hark from 'hark'
 import { t } from 'i18next'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { LocationState } from '@etherealengine/client-core/src/social/services/LocationService'
 import {
@@ -60,12 +60,22 @@ import { PeerMediaChannelState, PeerMediaStreamInterface } from '../../transport
 import { ConsumerExtension, SocketWebRTCClientNetwork } from '../../transports/SocketWebRTCClientFunctions'
 import { useUserAvatarThumbnail } from '../../user/functions/useUserAvatarThumbnail'
 import { AvatarState } from '../../user/services/AvatarService'
+import { AvatarService } from '../../user/services/AvatarService'
 import Draggable from './Draggable'
 import styles from './index.module.scss'
 
 interface Props {
   peerID: PeerID
   type: 'screen' | 'cam'
+}
+
+export const isJsonString = (str) => {
+  try {
+    JSON.parse(str)
+  } catch (e) {
+    return false
+  }
+  return true
 }
 
 export const useUserMediaWindowHook = ({ peerID, type }: Props) => {
@@ -419,6 +429,8 @@ export const UserMediaWindow = ({ peerID, type }: Props): JSX.Element => {
     rendered
   } = useUserMediaWindowHook({ peerID, type })
 
+  // const [ourThumbnail, setOurThumbnail] = useState('')
+
   const peerMediaChannelState = useHookstate(
     getMutableState(PeerMediaChannelState)[peerID][type] as State<PeerMediaStreamInterface>
   )
@@ -430,6 +442,43 @@ export const UserMediaWindow = ({ peerID, type }: Props): JSX.Element => {
     document.getElementById(peerID + '-' + type + '-video-container')!.append(videoElement)
     document.getElementById(peerID + '-' + type + '-audio-container')!.append(audioElement)
   }, [])
+
+  // const fetchList = async () => {
+  //   return await AvatarService.newFetchAvatarList2()
+  // }
+
+  // useEffect(() => {
+  //   let foundAvatarList, wintos, male, female
+  //   setTimeout(async () => {
+  //     foundAvatarList = await fetchList()
+
+  //     male = foundAvatarList.filter((avatar) => avatar.name === 'male')
+  //     female = foundAvatarList.filter((avatar) => avatar.name === 'female')
+
+  //     if (localStorage.getItem('keycloakUser')) {
+  //       if (localStorage.getItem('ComfirmSelected')) {
+  //         const id = localStorage.getItem('ComfirmSelected')
+  //         const targetAvatar = foundAvatarList.find((avatar) => avatar.id == id)
+  //         setOurThumbnail(targetAvatar.thumbnailResource.url)
+  //       } else {
+  //         wintos = foundAvatarList.filter((avatar) => avatar.name === 'WintosJR1')
+  //         setOurThumbnail(wintos[0].thumbnailResource.url)
+  //       }
+  //     } else {
+  //       if (localStorage.getItem('ComfirmSelected')) {
+  //         const id = localStorage.getItem('ComfirmSelected')
+  //         const targetAvatar = foundAvatarList.find((avatar) => avatar.id == id)
+  //         setOurThumbnail(targetAvatar.thumbnailResource.url)
+  //       } else {
+  //         if (avatarThumbnail != male[0].thumbnailResource.url && avatarThumbnail != female[0].thumbnailResource.url) {
+  //           setOurThumbnail(male[0].thumbnailResource.url)
+  //         } else {
+  //           setOurThumbnail(avatarThumbnail)
+  //         }
+  //       }
+  //     }
+  //   }, 100)
+  // }, [])
 
   useEffect(() => {
     if (!videoStream) return
@@ -499,7 +548,7 @@ export const UserMediaWindow = ({ peerID, type }: Props): JSX.Element => {
         </div>
         <span key={peerID + '-' + type + '-audio-container'} id={peerID + '-' + type + '-audio-container'} />
         <div className={styles['user-controls']}>
-          <div className={styles['username']}>{username}</div>
+          <div className={styles['username']}>{isJsonString(username) ? JSON.parse(username).name : username}</div>
           <div className={styles['controls']}>
             <div className={styles['mute-controls']}>
               {videoStream && !videoProducerPaused ? (

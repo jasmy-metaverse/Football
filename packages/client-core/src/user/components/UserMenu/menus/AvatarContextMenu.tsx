@@ -39,6 +39,7 @@ import Box from '@etherealengine/ui/src/primitives/mui/Box'
 import Chip from '@etherealengine/ui/src/primitives/mui/Chip'
 
 import { NotificationService } from '../../../../common/services/NotificationService'
+import { isJsonString } from '../../../../components/UserMediaWindow'
 import { SocialMenus } from '../../../../networking/NetworkInstanceProvisioning'
 import { FriendService, FriendState } from '../../../../social/services/FriendService'
 import { InviteService } from '../../../../social/services/InviteService'
@@ -128,7 +129,7 @@ const AvatarContextMenu = ({ onBack }: Props): JSX.Element => {
           <Avatar imageSrc={getUserAvatarThumbnail(userId)} size={150} sx={{ margin: '0 auto' }} />
 
           <Text variant="h6" align="center" mt={2} mb={1}>
-            {userName}
+            {isJsonString(userName) ? JSON.parse(userName).name : userName}
           </Text>
 
           {partyState?.party?.id?.value != null &&

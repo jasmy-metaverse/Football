@@ -47,8 +47,69 @@ export class AnimationManager {
     return animation ? animation.duration : 0
   }
 
+  // async loadAnimation(
+  //   path: string = `${process.env.VITE_FILE_SERVER}/projects/default-project/assets/customAnimation/kick.glb`
+  // ) {
+  //   const gltf = (await AssetLoader.loadAsync(path)) as GLTF
+
+  //   const defaultRig = makeDefaultSkinnedMesh()
+  //   const rig = avatarBoneMatching(defaultRig)
+  //   const rootBone = rig.Hips
+  //   rootBone.updateWorldMatrix(true, true)
+  //   const skinnedMeshes = findSkinnedMeshes(defaultRig)
+  //   makeTPose(rig)
+  //   rootBone.updateWorldMatrix(true, true)
+  //   skinnedMeshes.forEach((mesh) => mesh.skeleton.calculateInverses())
+  //   skinnedMeshes.forEach((mesh) => mesh.skeleton.computeBoneTexture())
+
+  //   this._defaultSkinnedMesh = defaultRig.children[0] as SkinnedMesh
+
+  //   this._defaultRootBone = findRootBone(this._defaultSkinnedMesh)!
+  //   gltf.animations.forEach((clip) => {
+  //     clip.tracks = clip.tracks.filter((track) => !track.name.match(/^CC_Base_/))
+
+  //     const rootData = processRootAnimation(clip, this._defaultRootBone)
+
+  //     if (rootData) {
+  //       this._rootAnimationData[clip.name] = rootData
+  //     }
+  //   })
+
+  //   return gltf.animations
+  // }
+
+  // async loadThrowAnimation(
+  //   path: string = `${process.env.VITE_FILE_SERVER}/projects/default-project/assets/customAnimation/throw4.glb`
+  // ) {
+  //   const gltf = (await AssetLoader.loadAsync(path)) as GLTF
+
+  //   const defaultRig = makeDefaultSkinnedMesh()
+  //   const rig = avatarBoneMatching(defaultRig)
+  //   const rootBone = rig.Hips
+  //   rootBone.updateWorldMatrix(true, true)
+  //   const skinnedMeshes = findSkinnedMeshes(defaultRig)
+  //   makeTPose(rig)
+  //   rootBone.updateWorldMatrix(true, true)
+  //   skinnedMeshes.forEach((mesh) => mesh.skeleton.calculateInverses())
+  //   skinnedMeshes.forEach((mesh) => mesh.skeleton.computeBoneTexture())
+
+  //   this._defaultSkinnedMesh = defaultRig.children[0] as SkinnedMesh
+
+  //   this._defaultRootBone = findRootBone(this._defaultSkinnedMesh)!
+  //   gltf.animations.forEach((clip) => {
+  //     clip.tracks = clip.tracks.filter((track) => !track.name.match(/^CC_Base_/))
+
+  //     const rootData = processRootAnimation(clip, this._defaultRootBone)
+  //     if (rootData) {
+  //       this._rootAnimationData[clip.name] = rootData
+  //     }
+  //   })
+  //   gltf.animations[0].name = 'throw'
+  //   return gltf.animations
+  // }
+
   async loadDefaultAnimations(
-    path: string = `${config.client.fileServer}/projects/default-project/assets/Animations.glb`
+    path: string = `${process.env.VITE_FILE_SERVER}/projects/default-project/assets/Animations3.glb`
   ) {
     if (this._animations) {
       return this._animations
@@ -81,6 +142,12 @@ export class AnimationManager {
         this._rootAnimationData[clip.name] = rootData
       }
     })
+
+    // let customAnimation: AnimationClip[] = await this.loadAnimation()
+    // this._animations.push(customAnimation[0])
+    // let customAnimation2: AnimationClip[] = await this.loadThrowAnimation()
+    // this._animations.push(customAnimation2[0])
+
     return this._animations
   }
 }

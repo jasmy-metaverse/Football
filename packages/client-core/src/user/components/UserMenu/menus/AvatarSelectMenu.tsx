@@ -61,11 +61,54 @@ const AvatarMenu = () => {
   const [selectedAvatarId, setSelectedAvatarId] = useState<string | undefined>(userAvatarId)
   const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null)
 
-  const selectedAvatar = avatarList.find((item) => item.id === selectedAvatarId)
+  let selectedAvatar: any = avatarList.find((item) => item.id === selectedAvatarId)
+
+  if (!selectedAvatar) {
+    selectedAvatar = avatarList.find((item) => item.name === 'male')
+  }
+
+  // const [previewAvatar, setPreviewAvatar] = useState<any>({})
+
+  // const fetchList = async () => {
+  //   return await AvatarService.newFetchAvatarList2()
+  // }
 
   useEffect(() => {
     AvatarService.fetchAvatarList()
   }, [])
+
+  // let foundAvatarList, wintos, male, female
+  // useEffect(() => {
+  //   setTimeout(async () => {
+  //     foundAvatarList = await fetchList()
+
+  //     male = foundAvatarList.filter((avatar) => avatar.name === 'male')
+  //     female = foundAvatarList.filter((avatar) => avatar.name === 'female')
+
+  //     if (localStorage.getItem('keycloakUser')) {
+  //       if (localStorage.getItem('ComfirmSelected')) {
+  //         const sId: any = localStorage.getItem('ComfirmSelected')
+  //         const sObj = foundAvatarList.find((avatar) => avatar.id == sId)
+  //         setPreviewAvatar(sObj)
+  //       } else {
+  //         wintos = foundAvatarList.filter((avatar) => avatar.name === 'WintosJR1')
+  //         setPreviewAvatar(wintos[0])
+  //       }
+  //     } else {
+  //       if (localStorage.getItem('ComfirmSelected')) {
+  //         const sId: any = localStorage.getItem('ComfirmSelected')
+  //         const sObj = foundAvatarList.find((avatar) => avatar.id == sId)
+  //         setPreviewAvatar(sObj)
+  //       } else {
+  //         if (selectedAvatar.id != male[0].id && selectedAvatar.id != female[0].id) {
+  //           setPreviewAvatar(male)
+  //         } else {
+  //           setPreviewAvatar(selectedAvatar)
+  //         }
+  //       }
+  //     }
+  //   }, 100)
+  // }, [])
 
   const setAvatar = (avatarId: string) => {
     if (hasComponent(Engine.instance.localClientEntity, AvatarEffectComponent)) return
@@ -75,6 +118,9 @@ const AvatarMenu = () => {
   }
 
   const handleConfirmAvatar = () => {
+    const name: any = selectedAvatar.name
+    localStorage.setItem('selectavatar', name)
+    localStorage.setItem('ComfirmSelected', 'true')
     if (selectedAvatarId && selectedAvatar && userAvatarId !== selectedAvatarId) {
       setAvatar(selectedAvatarId)
       PopupMenuServices.showPopupMenu()
@@ -128,7 +174,7 @@ const AvatarMenu = () => {
           </Button>
         </Box>
       }
-      title={t('user:avatar.titleSelectAvatar')}
+      // title={t('user:avatar.titleSelectAvatar')}
       onBack={() => PopupMenuServices.showPopupMenu(UserMenus.Profile)}
       onClose={() => PopupMenuServices.showPopupMenu()}
     >
@@ -139,12 +185,12 @@ const AvatarMenu = () => {
           </Grid>
 
           <Grid item md={6} sx={{ width: '100%' }}>
-            <InputText
+            {/* <InputText
               placeholder={t('user:avatar.searchAvatar')}
               value={localSearchString}
               sx={{ mt: 1 }}
               onChange={(e) => handleSearch(e.target.value)}
-            />
+            /> */}
 
             <IconButton
               icon={<Icon type="KeyboardArrowUp" />}
@@ -181,7 +227,7 @@ const AvatarMenu = () => {
                 onClick={handleNextAvatars}
               />
             </Box>
-            <Button
+            {/* <Button
               fullWidth
               startIcon={<Icon type="PersonAdd" />}
               title={t('user:avatar.createAvatar')}
@@ -190,7 +236,7 @@ const AvatarMenu = () => {
               onClick={() => PopupMenuServices.showPopupMenu(UserMenus.AvatarModify)}
             >
               {t('user:avatar.createAvatar')}
-            </Button>
+            </Button> */}
           </Grid>
         </Grid>
       </Box>

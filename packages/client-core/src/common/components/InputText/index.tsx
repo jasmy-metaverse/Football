@@ -69,6 +69,7 @@ interface Props {
 const InputText = ({
   className,
   disabled,
+  readOnly,
   endAdornment,
   endControl,
   endIcon,
@@ -123,6 +124,7 @@ const InputText = ({
 
           <OutlinedInput
             disabled={disabled}
+            readOnly={readOnly}
             error={!!error}
             fullWidth
             id={id}

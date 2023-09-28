@@ -25,6 +25,7 @@ Ethereal Engine. All Rights Reserved.
 
 import { createState, useHookstate } from '@hookstate/core'
 import React, { Fragment, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 import { AuthState } from '@etherealengine/client-core/src/user/services/AuthService'
 import { WorldState } from '@etherealengine/engine/src/networking/interfaces/WorldState'
@@ -48,6 +49,7 @@ function createChatDetailState() {
 }
 /** @deprecated */
 const ChatDetailView = () => {
+  const { t } = useTranslation()
   const [unreadMessages, setUnreadMessages] = useState(false)
 
   const { activeChannel, handleComposingMessageChange, packageMessage, composingMessage } = useChatHooks({
@@ -122,7 +124,7 @@ const ChatDetailView = () => {
           <XRInput
             className="messageInputBox"
             id="newMessage"
-            placeholder={'World Chat...'}
+            placeholder={t('user:usermenu.mediaSession.worldChat')}
             name="newMessage"
             value={composingMessage}
             onChange={handleComposingMessageChange}

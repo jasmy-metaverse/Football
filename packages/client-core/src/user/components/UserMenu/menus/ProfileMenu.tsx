@@ -24,7 +24,7 @@ Ethereal Engine. All Rights Reserved.
 */
 
 // import * as polyfill from 'credential-handler-polyfill'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 
@@ -36,6 +36,7 @@ import { DiscordIcon } from '@etherealengine/client-core/src/common/components/I
 import { FacebookIcon } from '@etherealengine/client-core/src/common/components/Icons/FacebookIcon'
 import { GithubIcon } from '@etherealengine/client-core/src/common/components/Icons/GithubIcon'
 import { GoogleIcon } from '@etherealengine/client-core/src/common/components/Icons/GoogleIcon'
+import { KeycloakIcon } from '@etherealengine/client-core/src/common/components/Icons/KeycloakIcon'
 import { LinkedInIcon } from '@etherealengine/client-core/src/common/components/Icons/LinkedInIcon'
 import { TwitterIcon } from '@etherealengine/client-core/src/common/components/Icons/TwitterIcon'
 import InputText from '@etherealengine/client-core/src/common/components/InputText'
@@ -56,6 +57,7 @@ import { initialAuthState, initialOAuthConnectedState } from '../../../../common
 import { NotificationService } from '../../../../common/services/NotificationService'
 import { useUserAvatarThumbnail } from '../../../functions/useUserAvatarThumbnail'
 import { AuthService, AuthState } from '../../../services/AuthService'
+import { AvatarService } from '../../../services/AvatarService'
 import { UserMenus } from '../../../UserUISystem'
 import styles from '../index.module.scss'
 import { PopupMenuServices } from '../PopupMenuService'
@@ -92,7 +94,7 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
   const userId = selfUser.id.value
   const apiKey = selfUser.apiKey?.token?.value
   const isGuest = selfUser.isGuest.value
-
+  console.log('isGuest', selfUser.isGuest)
   const hasAdminAccess =
     selfUser?.id?.value?.length > 0 && selfUser?.scopes?.value?.find((scope) => scope.type === 'admin:admin')
   const avatarThumbnail = useUserAvatarThumbnail(userId)
@@ -162,6 +164,9 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
           case 'github':
             oauthConnectedState.merge({ github: true })
             break
+          case 'keycloak':
+            oauthConnectedState.merge({ keycloak: true })
+            break
         }
       }
   }, [selfUser.identityProviders])
@@ -169,6 +174,12 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
   const updateUserName = (e) => {
     e.preventDefault()
     handleUpdateUsername()
+  }
+
+  const deleteAccount = () => {
+    showDeleteAccount.set(true)
+    localStorage.removeItem('keycloakUser')
+    localStorage.removeItem('ComfirmSelected')
   }
 
   const handleUsernameChange = (e) => {
@@ -209,7 +220,9 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
   }
 
   const handleOAuthServiceClick = (e) => {
-    AuthService.loginUserByOAuth(e.currentTarget.id, location)
+    if (!localStorage.getItem('keycloakUser')) {
+      AuthService.loginUserByOAuth(e.currentTarget.id, location)
+    }
   }
 
   const handleRemoveOAuthServiceClick = (e) => {
@@ -217,13 +230,31 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
   }
 
   const handleLogout = async () => {
-    PopupMenuServices.showPopupMenu(UserMenus.Profile)
-    if (onClose) onClose()
-    showUserId.set(false)
-    showApiKey.set(false)
-    await AuthService.logoutUser()
-    // window.location.reload()
-    oauthConnectedState.set(Object.assign({}, initialOAuthConnectedState))
+    // PopupMenuServices.showPopupMenu(UserMenus.Profile)
+    // if (onClose) onClose()
+    // showUserId.set(false)
+    // showApiKey.set(false)
+    // await AuthService.logoutUser()
+    // localStorage.removeItem('keycloakUser')
+    // localStorage.removeItem('usercode')
+    // localStorage.removeItem('ComfirmSelected')
+    // localStorage.removeItem('avatarname')
+    // localStorage.removeItem('selectavatar')
+    // localStorage.removeItem('pdl_access_token')
+    // oauthConnectedState.set(Object.assign({}, initialOAuthConnectedState))
+    // setTimeout(() => {
+    //   const url = window.location.href
+    //   const urlWithoutQueryString = url.split('?')[0]
+    //   window.location.href = urlWithoutQueryString
+    //   console.log(urlWithoutQueryString)
+    //  }, 1000)
+    const url = window.location.href
+    const urlWithoutQueryString = url.split('?')[0]
+    // window.location.href = `${urlWithoutQueryString}?logout`
+    window.location.href = `${process.env.VITE_PORTAL_LOCATION}?code=${localStorage.getItem(
+      'userCode'
+    )}&&username=${localStorage.getItem('username')}&&avatarname=${localStorage.getItem('avatarname')}&&logout`
+    console.log(urlWithoutQueryString)
   }
 
   /**
@@ -354,6 +385,14 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
 
   const enableConnect = authState?.value?.emailMagicLink || authState?.value?.smsMagicLink
 
+  let userName = ''
+  try {
+    const userInfo = JSON.parse(username.value)
+    userName = userInfo.name
+  } catch (e) {
+    userName = username.value
+  }
+
   return (
     <Menu open isPopover={isPopover} onClose={() => PopupMenuServices.showPopupMenu()}>
       <Box className={styles.menuContent}>
@@ -366,11 +405,13 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
 
           <Box className={styles.profileDetails}>
             <Text variant="body2">
-              {hasAdminAccess ? t('user:usermenu.profile.youAreAn') : t('user:usermenu.profile.youAreA')}
-              <span className={commonStyles.bold}>{hasAdminAccess ? ' Admin' : isGuest ? ' Guest' : ' User'}</span>.
+              <span className={commonStyles.bold}>
+                {isGuest ? t('user:usermenu.profile.youAreAGuest') : t('user:usermenu.profile.youAreAUser')}
+              </span>
+              .
             </Text>
 
-            {selfUser?.inviteCode.value && (
+            {/* {selfUser?.inviteCode.value && (
               <Text mt={1} variant="body2">
                 {t('user:usermenu.profile.inviteCode')}: {selfUser.inviteCode.value}
               </Text>
@@ -378,7 +419,7 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
 
             <Text id="show-user-id" mt={1} variant="body2" onClick={() => showUserId.set(!showUserId.value)}>
               {showUserId.value ? t('user:usermenu.profile.hideUserId') : t('user:usermenu.profile.showUserId')}
-            </Text>
+            </Text> */}
 
             {selfUser?.apiKey?.id && (
               <Text variant="body2" mt={1} onClick={() => showApiKey.set(!showApiKey.value)}>
@@ -386,11 +427,11 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
               </Text>
             )}
 
-            {!isGuest && (
-              <Text variant="body2" mt={1} onClick={handleLogout}>
-                {t('user:usermenu.profile.logout')}
-              </Text>
-            )}
+            {/* {!isGuest && ( */}
+            <Text variant="body2" mt={1} onClick={handleLogout}>
+              {t('user:usermenu.profile.logout')}
+            </Text>
+            {/* )} */}
           </Box>
 
           {!isPopover && (
@@ -417,10 +458,12 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
         <InputText
           name="username"
           label={t('user:usermenu.profile.lbl-username')}
-          value={username.value || ''}
+          // value={username.value || ''}
+          value={userName || ''}
+          readOnly={true}
           error={errorUsername.value}
           sx={{ mt: 4 }}
-          endIcon={<Icon type="Check" />}
+          // endIcon={<Icon type="Check" />}
           onEndIconClick={updateUserName}
           onChange={handleUsernameChange}
           onKeyDown={(e) => {
@@ -464,7 +507,12 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
 
         {!hideLogin && (
           <>
-            {isGuest && enableConnect && (
+            {/* <div className="termsAndConditions">
+              <a href={process.env.VITE_TERMS_CONDITIONS_LINK} target="_blank">
+                Terms & Conditions
+              </a>
+            </div> */}
+            {/* {isGuest && enableConnect && (
               <>
                 <InputText
                   label={getConnectText()}
@@ -487,9 +535,9 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
                   </Box>
                 )}
               </>
-            )}
+            )} */}
 
-            {isGuest && enableWalletLogin && (
+            {/* {isGuest && enableWalletLogin && (
               <>
                 <Text align="center" variant="body2" mb={1} mt={2}>
                   {t('user:usermenu.profile.or')}
@@ -513,9 +561,9 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
                   </Box>
                 )}
               </>
-            )}
+            )} */}
 
-            {enableSocial && (
+            {/* {enableSocial && (
               <>
                 {selfUser?.isGuest.value && (
                   <Text align="center" variant="body2" mb={1} mt={2}>
@@ -527,13 +575,23 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
                   {authState?.value?.discord && !oauthConnectedState.discord.value && (
                     <IconButton
                       id="discord"
+                      disabled={!selfUser?.isGuest.value && removeSocial}
                       icon={<DiscordIcon viewBox="0 0 40 40" />}
+                      onClick={handleOAuthServiceClick}
+                    />
+                  )}
+                  {authState?.value?.keycloak && !oauthConnectedState.keycloak.value && (
+                    <IconButton
+                      id="keycloak"
+                      disabled={!selfUser?.isGuest.value && removeSocial}
+                      icon={<KeycloakIcon />}
                       onClick={handleOAuthServiceClick}
                     />
                   )}
                   {authState?.value?.google && !oauthConnectedState.google.value && (
                     <IconButton
                       id="google"
+                      disabled={!selfUser?.isGuest.value && removeSocial}
                       icon={<GoogleIcon viewBox="0 0 40 40" />}
                       onClick={handleOAuthServiceClick}
                     />
@@ -541,6 +599,7 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
                   {authState?.value?.facebook && !oauthConnectedState.facebook.value && (
                     <IconButton
                       id="facebook"
+                      disabled={!selfUser?.isGuest.value && removeSocial}
                       icon={<FacebookIcon width="40" height="40" viewBox="0 0 40 40" />}
                       onClick={handleOAuthServiceClick}
                     />
@@ -548,6 +607,7 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
                   {authState?.value?.linkedin && !oauthConnectedState.linkedin.value && (
                     <IconButton
                       id="linkedin"
+                      disabled={!selfUser?.isGuest.value && removeSocial}
                       icon={<LinkedInIcon viewBox="0 0 40 40" />}
                       onClick={handleOAuthServiceClick}
                     />
@@ -555,12 +615,18 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
                   {authState?.value?.twitter && !oauthConnectedState.twitter.value && (
                     <IconButton
                       id="twitter"
+                      disabled={!selfUser?.isGuest.value && removeSocial}
                       icon={<TwitterIcon width="40" height="40" viewBox="0 0 40 40" />}
                       onClick={handleOAuthServiceClick}
                     />
                   )}
                   {authState?.value?.github && !oauthConnectedState.github.value && (
-                    <IconButton id="github" icon={<Icon type="GitHub" />} onClick={handleOAuthServiceClick} />
+                    <IconButton
+                      id="github"
+                      disabled={!selfUser?.isGuest.value && removeSocial}
+                      icon={<Icon type="GitHub" />}
+                      onClick={handleOAuthServiceClick}
+                    />
                   )}
                 </div>
 
@@ -577,6 +643,9 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
                           icon={<DiscordIcon viewBox="0 0 40 40" />}
                           onClick={handleRemoveOAuthServiceClick}
                         />
+                      )}
+                      {authState?.keycloak.value && oauthConnectedState.keycloak.value && (
+                        <IconButton id="keycloak" icon={<KeycloakIcon />} onClick={handleRemoveOAuthServiceClick} />
                       )}
                       {authState?.google.value && oauthConnectedState.google.value && (
                         <IconButton
@@ -613,13 +682,13 @@ const ProfileMenu = ({ hideLogin, onClose, isPopover }: Props): JSX.Element => {
                   </>
                 )}
               </>
-            )}
+            )} */}
 
-            {!isGuest && (
-              <Text id="delete-account" mb={1} variant="body2" onClick={() => showDeleteAccount.set(true)}>
+            {/* {!isGuest && (
+              <Text id="delete-account" mb={1} variant="body2" onClick={() => deleteAccount()}>
                 {t('user:usermenu.profile.delete.deleteAccount')}
               </Text>
-            )}
+            )} */}
 
             {showDeleteAccount.value && (
               <ConfirmDialog

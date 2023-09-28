@@ -205,6 +205,11 @@ const ProfileDetailView = () => {
               return { ...oauthConnectedState, github: true }
             })
             break
+          case 'keycloak':
+            oauthConnectedState.set((oauthConnectedState) => {
+              return { ...oauthConnectedState, keycloak: true }
+            })
+            break
         }
       }
   }, [selfUser.identityProviders])

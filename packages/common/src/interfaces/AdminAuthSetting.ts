@@ -54,6 +54,7 @@ interface Callback {
   linkedin: string
   twitter: string
   discord: string
+  keycloak: string
 }
 
 interface Oauth {
@@ -64,6 +65,7 @@ interface Oauth {
   linkedin: Linkedin
   twitter: Twitter
   discord: Discord
+  keycloak: Keycloak
 }
 
 interface Defaults {
@@ -99,6 +101,12 @@ interface Linkedin {
 }
 
 interface Twitter {
+  key: string
+  secret: string
+}
+
+interface Keycloak {
+  appid: string
   key: string
   secret: string
 }

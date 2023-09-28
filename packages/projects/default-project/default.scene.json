@@ -52,21 +52,9 @@
             "envMapOrigin": "__$project$__/default-project/default.envmap.ktx2",
             "boxProjection": true
           }
-        },
-        {
-          "name": "fog",
-          "props": {
-            "type": "linear",
-            "color": "#FFFFFF",
-            "density": 0.005,
-            "near": 1,
-            "far": 1000,
-            "timeScale": 1,
-            "height": 0.05
-          }
         }
       ],
-      "name": "default"
+      "name": "empty_scene"
     },
     "bb362197-f14d-4da7-9c3c-1ed834386423": {
       "components": [
@@ -75,8 +63,8 @@
           "props": {
             "position": {
               "x": 0,
-              "y": 2.5,
-              "z": 5
+              "y": 0,
+              "z": 0
             },
             "rotation": {
               "x": 0,
@@ -150,61 +138,15 @@
       "index": 1,
       "name": "skybox"
     },
-    "38793f94-0b92-4ea1-af7b-5ec0e117628d": {
-      "components": [
-        {
-          "name": "transform",
-          "props": {
-            "position": {
-              "x": 0,
-              "y": 0,
-              "z": 0
-            },
-            "rotation": {
-              "x": 0,
-              "y": 0,
-              "z": 0,
-              "w": 1
-            },
-            "scale": {
-              "x": 1,
-              "y": 1,
-              "z": 1
-            }
-          }
-        },
-        {
-          "name": "visible",
-          "props": {}
-        },
-        {
-          "name": "ground-plane",
-          "props": {
-            "color": 8311585,
-            "visible": true
-          }
-        },
-        {
-          "name": "shadow",
-          "props": {
-            "cast": false,
-            "receive": true
-          }
-        }
-      ],
-      "parent": "d32b1c4e-d08e-4fb0-9107-4c88a281ee71",
-      "index": 2,
-      "name": "ground plane"
-    },
     "3e8a430e-9dcf-440e-990c-44ecb8051762": {
       "components": [
         {
           "name": "transform",
           "props": {
             "position": {
-              "x": 0,
-              "y": 0,
-              "z": 0
+              "x": 6.0537761891596436,
+              "y": -7.366281676409643e-15,
+              "z": 10.191302056165528
             },
             "rotation": {
               "x": -5.053215498074303e-16,
@@ -231,7 +173,7 @@
         }
       ],
       "parent": "d32b1c4e-d08e-4fb0-9107-4c88a281ee71",
-      "index": 3,
+      "index": 2,
       "name": "spawn point"
     },
     "f77dc4c6-c9a6-433d-8102-4a9a8e1c0ce9": {
@@ -271,7 +213,7 @@
         }
       ],
       "parent": "d32b1c4e-d08e-4fb0-9107-4c88a281ee71",
-      "index": 4,
+      "index": 3,
       "name": "hemisphere light"
     },
     "cb045cfd-8daf-4a2b-b764-35625be54a11": {
@@ -316,8 +258,466 @@
         }
       ],
       "parent": "d32b1c4e-d08e-4fb0-9107-4c88a281ee71",
-      "index": 5,
+      "index": 4,
       "name": "directional light"
+    },
+    "2684f318-d924-4f5c-8d80-004255ecbe34": {
+      "components": [
+        {
+          "name": "transform",
+          "props": {
+            "position": {
+              "x": 6.5,
+              "y": 0,
+              "z": 5.5
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        },
+        {
+          "name": "visible",
+          "props": {}
+        },
+        {
+          "name": "shadow",
+          "props": {
+            "cast": true,
+            "receive": true
+          }
+        },
+        {
+          "name": "gltf-model",
+          "props": {
+            "src": "__$project$__/default-project/assets/stadium_bigger_goalbar_no_cocacola.glb",
+            "generateBVH": true,
+            "avoidCameraOcclusion": false
+          }
+        },
+        {
+          "name": "envmap",
+          "props": {
+            "type": "None",
+            "envMapTextureType": "Equirectangular",
+            "envMapSourceColor": 4095,
+            "envMapSourceURL": "",
+            "envMapIntensity": 1
+          }
+        },
+        {
+          "name": "loop-animation",
+          "props": {
+            "activeClipIndex": -1,
+            "hasAvatarAnimations": false
+          }
+        }
+      ],
+      "parent": "d32b1c4e-d08e-4fb0-9107-4c88a281ee71",
+      "index": 5,
+      "name": "New Model 6"
+    },
+    "98710490-faeb-4905-92a2-15fcbce2a3a7": {
+      "components": [
+        {
+          "name": "transform",
+          "props": {
+            "position": {
+              "x": -6.579572665318083,
+              "y": 0.0840000014901161,
+              "z": -52.23055989129465
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        },
+        {
+          "name": "shadow",
+          "props": {
+            "cast": true,
+            "receive": true
+          }
+        },
+        {
+          "name": "gltf-model",
+          "props": {
+            "src": "__$project$__/default-project/assets/ground_plane_collider_v3.glb",
+            "generateBVH": true,
+            "avoidCameraOcclusion": false
+          }
+        },
+        {
+          "name": "envmap",
+          "props": {
+            "type": "None",
+            "envMapTextureType": "Equirectangular",
+            "envMapSourceColor": 4095,
+            "envMapSourceURL": "",
+            "envMapIntensity": 1
+          }
+        },
+        {
+          "name": "loop-animation",
+          "props": {
+            "activeClipIndex": -1,
+            "hasAvatarAnimations": false
+          }
+        },
+        {
+          "name": "collider",
+          "props": {
+            "bodyType": 1,
+            "shapeType": 1,
+            "isTrigger": false,
+            "removeMesh": false,
+            "collisionLayer": 1,
+            "collisionMask": 7,
+            "restitution": 0.5
+          }
+        }
+      ],
+      "parent": "2684f318-d924-4f5c-8d80-004255ecbe34",
+      "index": 0,
+      "name": "ground_collider"
+    },
+    "6dc61c4f-eb63-4e5b-bd27-cbcbc787c673": {
+      "components": [
+        {
+          "name": "transform",
+          "props": {
+            "position": {
+              "x": 0,
+              "y": 0.16600000000000015,
+              "z": 0
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "scale": {
+              "x": 1,
+              "y": 1,
+              "z": 1
+            }
+          }
+        },
+        {
+          "name": "shadow",
+          "props": {
+            "cast": true,
+            "receive": true
+          }
+        },
+        {
+          "name": "gltf-model",
+          "props": {
+            "src": "__$project$__/default-project/assets/collider_inner_stadium_bigger_goalbar_v5.glb",
+            "generateBVH": true,
+            "avoidCameraOcclusion": false
+          }
+        },
+        {
+          "name": "envmap",
+          "props": {
+            "type": "None",
+            "envMapTextureType": "Equirectangular",
+            "envMapSourceColor": 4095,
+            "envMapSourceURL": "",
+            "envMapIntensity": 1
+          }
+        },
+        {
+          "name": "loop-animation",
+          "props": {
+            "activeClipIndex": -1,
+            "hasAvatarAnimations": false
+          }
+        },
+        {
+          "name": "collider",
+          "props": {
+            "bodyType": 1,
+            "shapeType": 1,
+            "isTrigger": false,
+            "removeMesh": false,
+            "collisionLayer": 1,
+            "collisionMask": 7,
+            "restitution": 0.5
+          }
+        }
+      ],
+      "parent": "2684f318-d924-4f5c-8d80-004255ecbe34",
+      "index": 1,
+      "name": "inside_collider"
+    },
+    "ea40f3c3-0a46-4e13-828b-691127ca9f11": {
+      "components": [
+        {
+          "name": "transform",
+          "props": {
+            "position": {
+              "x": 10.918638252273976,
+              "y": 0.9472174639589692,
+              "z": -17.259273810539046
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "scale": {
+              "x": 0.5,
+              "y": 0.5,
+              "z": 0.5
+            }
+          }
+        },
+        {
+          "name": "visible",
+          "props": {}
+        },
+        {
+          "name": "shadow",
+          "props": {
+            "cast": true,
+            "receive": true
+          }
+        },
+        {
+          "name": "collider",
+          "props": {
+            "bodyType": 1,
+            "shapeType": 1,
+            "isTrigger": true,
+            "removeMesh": true,
+            "collisionLayer": 8,
+            "collisionMask": 2,
+            "restitution": 0.5,
+            "onEnter": "teleport",
+            "onExit": null,
+            "target": ""
+          }
+        },
+        {
+          "name": "portal",
+          "props": {
+            "location": "default",
+            "linkedPortalId": "",
+            "redirect": true,
+            "effectType": "Hyperspace",
+            "previewType": "Spherical",
+            "previewImageURL": "",
+            "spawnPosition": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "spawnRotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            }
+          }
+        }
+      ],
+      "parent": "2684f318-d924-4f5c-8d80-004255ecbe34",
+      "index": 2,
+      "name": "shrine_portal"
+    },
+    "1c4440af-f25f-4130-8972-f09aae0091fd": {
+      "components": [
+        {
+          "name": "transform",
+          "props": {
+            "position": {
+              "x": -11.522671601654254,
+              "y": 1.9471473632058292,
+              "z": -16.06984906918165
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "scale": {
+              "x": 1,
+              "y": 0.2463768115942029,
+              "z": 1
+            }
+          }
+        },
+        {
+          "name": "visible",
+          "props": {}
+        },
+        {
+          "name": "shadow",
+          "props": {
+            "cast": true,
+            "receive": true
+          }
+        },
+        {
+          "name": "image",
+          "props": {
+            "source": "__$project$__/default-project/assets/Football.png",
+            "alphaMode": "Opaque",
+            "alphaCutoff": 0.5,
+            "projection": "Flat",
+            "side": 2
+          }
+        }
+      ],
+      "parent": "2684f318-d924-4f5c-8d80-004255ecbe34",
+      "index": 3,
+      "name": "New Image"
+    },
+    "4ea30388-dd42-47a6-b098-0076532e89fa": {
+      "components": [
+        {
+          "name": "transform",
+          "props": {
+            "position": {
+              "x": 10.84014466093214,
+              "y": 1.9171345350089086,
+              "z": -17.17841745543191
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "scale": {
+              "x": 1,
+              "y": 0.2981651376146789,
+              "z": 1
+            }
+          }
+        },
+        {
+          "name": "visible",
+          "props": {}
+        },
+        {
+          "name": "shadow",
+          "props": {
+            "cast": true,
+            "receive": true
+          }
+        },
+        {
+          "name": "image",
+          "props": {
+            "source": "__$project$__/default-project/assets/shrine.png",
+            "alphaMode": "Opaque",
+            "alphaCutoff": 0.5,
+            "projection": "Flat",
+            "side": 2
+          }
+        }
+      ],
+      "parent": "2684f318-d924-4f5c-8d80-004255ecbe34",
+      "index": 4,
+      "name": "New Image 2"
+    },
+    "b590d616-79bb-4578-b829-a20e3423b6ec": {
+      "components": [
+        {
+          "name": "transform",
+          "props": {
+            "position": {
+              "x": -11.522671601654254,
+              "y": 0.8269668782615534,
+              "z": -16.07255869095981
+            },
+            "rotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            },
+            "scale": {
+              "x": 0.5,
+              "y": 0.5,
+              "z": 0.5
+            }
+          }
+        },
+        {
+          "name": "visible",
+          "props": {}
+        },
+        {
+          "name": "shadow",
+          "props": {
+            "cast": true,
+            "receive": true
+          }
+        },
+        {
+          "name": "collider",
+          "props": {
+            "bodyType": 1,
+            "shapeType": 1,
+            "isTrigger": true,
+            "removeMesh": true,
+            "collisionLayer": 8,
+            "collisionMask": 2,
+            "restitution": 0.5,
+            "onEnter": "teleport",
+            "onExit": null,
+            "target": ""
+          }
+        },
+        {
+          "name": "portal",
+          "props": {
+            "location": "football",
+            "linkedPortalId": "",
+            "redirect": true,
+            "effectType": "Hyperspace",
+            "previewType": "Spherical",
+            "previewImageURL": "",
+            "spawnPosition": {
+              "x": 0,
+              "y": 0,
+              "z": 0
+            },
+            "spawnRotation": {
+              "x": 0,
+              "y": 0,
+              "z": 0,
+              "w": 1
+            }
+          }
+        }
+      ],
+      "parent": "2684f318-d924-4f5c-8d80-004255ecbe34",
+      "index": 5,
+      "name": "football_portal"
     }
   },
   "root": "d32b1c4e-d08e-4fb0-9107-4c88a281ee71"

@@ -33,4 +33,5 @@ export interface AuthStrategies {
   emailMagicLink: boolean
   smsMagicLink: boolean
   didWallet: boolean
+  keycloak?: boolean
 }

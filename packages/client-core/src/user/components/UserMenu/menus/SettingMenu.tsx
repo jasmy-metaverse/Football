@@ -203,13 +203,15 @@ const SettingMenu = ({ isPopover }: Props): JSX.Element => {
             <Grid container spacing={{ xs: 0, sm: 2 }}>
               {accessibleThemeModes.map((mode, index) => (
                 <Grid key={index} item xs={12} sm={4}>
-                  <InputSelect
-                    name={mode}
-                    label={`${t(`user:usermenu.setting.${mode}`)} ${t('user:usermenu.setting.theme')}`}
-                    value={themeModes[mode]}
-                    menu={colorModesMenu}
-                    onChange={(e) => handleChangeUserThemeMode(e)}
-                  />
+                  {mode === 'client' && (
+                    <InputSelect
+                      name={mode}
+                      label={`${t(`user:usermenu.setting.${mode}`)} ${t('user:usermenu.setting.theme')}`}
+                      value={themeModes[mode]}
+                      menu={colorModesMenu}
+                      onChange={(e) => handleChangeUserThemeMode(e)}
+                    />
+                  )}
                 </Grid>
               ))}
             </Grid>
@@ -313,20 +315,13 @@ const SettingMenu = ({ isPopover }: Props): JSX.Element => {
                   {t('user:usermenu.setting.windowsPerformanceHelp')}
                 </Text>
 
-                <Text variant="caption">
-                  If you're experiencing performance issues, and you're running on a machine with Nvidia graphics, try
-                  the following.
-                </Text>
+                <Text variant="caption">{t('user:usermenu.setting.graphicsPerfomanceIssue')}</Text>
 
-                <Text variant="caption">
-                  Open the Nvidia Control Panel, select Chrome, make sure "High Performance" is selected.
-                </Text>
+                <Text variant="caption">{t('user:usermenu.setting.graphicsPerfomanceSolution')}</Text>
 
                 <img className={styles.row} src="/static/Nvidia_control_panel1.png" alt="Nvidia Control Panel" />
 
-                <Text variant="caption">
-                  In settings for Windows 10/11, search for the 'Graphics' preference on AMD/Nvidia for Chrome.
-                </Text>
+                <Text variant="caption">{t('user:usermenu.setting.settingGraphics')}</Text>
 
                 <img className={styles.row} src="/static/Nvidia_windows_prefs.png" alt="Nvidia Windows Preferences" />
               </>

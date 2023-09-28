@@ -30,8 +30,8 @@ import { getMutableState } from '@etherealengine/hyperflux'
 
 const sceneRelativePathIdentifier = '__$project$__'
 const sceneCorsPathIdentifier = '__$cors-proxy$__'
-const fileServer = config.client.fileServer ?? `https://localhost:8642`
-const corsPath = config.client.cors.serverPort ? config.client.cors.proxyUrl : `https://localhost:3029`
+const fileServer = config.client.fileServer ?? `${process.env.VITE_FILE_SERVER}`
+const corsPath = config.client.cors.serverPort ? config.client.cors.proxyUrl : `https://${process.env['VITE_SERVER_HOST']}:${process.env['VITE_CORS_SERVER_PORT']}`
 
 const parseSceneDataCacheURLsLocal = (projectName: string, sceneData: any) => {
   for (const [key, val] of Object.entries(sceneData)) {

@@ -98,7 +98,7 @@ export const configurePrimus =
       'capacitor://' + appConfig.server.clientHost,
       'ionic://' + appConfig.server.clientHost
     ]
-    if (!instanceserver) origin.push('https://localhost:3001')
+    if (!instanceserver) origin.push('https://' + appConfig.server.clientHost.split(':')[0]+':3001')
     app.configure(
       primus(
         {

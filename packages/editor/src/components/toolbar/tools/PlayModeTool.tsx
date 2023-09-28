@@ -63,12 +63,12 @@ const PlayModeTool = () => {
 
       const avatarSpawnPose = getRandomSpawnPoint(Engine.instance.userId)
 
-      if (avatarDetails)
+      if (avatarDetails) { console.log('Iffat - RUN2')
         spawnLocalAvatarInWorld({
           avatarSpawnPose,
           avatarID: avatarDetails.id,
           name: authState.user.name.value
-        })
+        }) }
       dispatchAction(EditorHelperAction.changedPlayMode({ isPlayModeEnabled: true }))
     }
   }

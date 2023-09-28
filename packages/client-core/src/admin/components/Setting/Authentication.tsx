@@ -48,7 +48,8 @@ const OAUTH_TYPES = {
   GITHUB: 'github',
   GOOGLE: 'google',
   LINKEDIN: 'linkedin',
-  TWITTER: 'twitter'
+  TWITTER: 'twitter',
+  KEYCLOAK: 'keycloak'
 }
 
 const Account = () => {
@@ -65,7 +66,8 @@ const Account = () => {
     google: authSetting?.oauth.google,
     twitter: authSetting?.oauth.twitter,
     linkedin: authSetting?.oauth.linkedin,
-    facebook: authSetting?.oauth.facebook
+    facebook: authSetting?.oauth.facebook,
+    keycloak: authSetting?.oauth.keycloak
   })
   const showPassword = useHookstate({
     discord: {
@@ -90,6 +92,11 @@ const Account = () => {
       secret: false
     },
     twitter: {
+      key: false,
+      secret: false
+    },
+    keycloak: {
+      appid: false,
       key: false,
       secret: false
     }
@@ -132,7 +139,8 @@ const Account = () => {
           google: authSetting?.oauth.google,
           twitter: authSetting?.oauth.twitter,
           linkedin: authSetting?.oauth.linkedin,
-          facebook: authSetting?.oauth.facebook
+          facebook: authSetting?.oauth.facebook,
+          keycloak: authSetting?.oauth.keycloak
         })
       )
       keySecret.set(tempKeySecret)

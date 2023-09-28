@@ -47,6 +47,8 @@ export const AvatarStates = {
   CLAP: 'CLAP' as const,
   CRY: 'CRY' as const,
   KISS: 'KISS' as const,
+  KICK: 'KICK' as const,
+  THROW: 'THROW' as const,
   WAVE: 'WAVE' as const,
   LAUGH: 'LAUGH' as const,
   DEFEAT: 'DEFEAT' as const,
@@ -102,6 +104,8 @@ export const AvatarAnimations = {
   LAUGH: 'laugh',
   WAVE: 'wave',
   KISS: 'kiss',
+  KICK: 'kick',
+  THROW: 'throw',
   DEFEAT: 'defeat',
   PAUSE: 'pause',
   CRY: 'cry'

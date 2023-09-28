@@ -42,7 +42,8 @@ export const authenticationSeed = {
         { google: true },
         { linkedin: true },
         { twitter: true },
-        { didWallet: true }
+        { didWallet: true },
+        { keycloak: true }
       ]),
       jwtOptions: JSON.stringify({
         expiresIn: '30 days'
@@ -56,7 +57,8 @@ export const authenticationSeed = {
         github: process.env.GITHUB_CALLBACK_URL || `${config.client.url}/auth/oauth/github`,
         google: process.env.GOOGLE_CALLBACK_URL || `${config.client.url}/auth/oauth/google`,
         linkedin: process.env.LINKEDIN_CALLBACK_URL || `${config.client.url}/auth/oauth/linkedin`,
-        twitter: process.env.TWITTER_CALLBACK_URL || `${config.client.url}/auth/oauth/twitter`
+        twitter: process.env.TWITTER_CALLBACK_URL || `${config.client.url}/auth/oauth/twitter`,
+        keycloak: process.env.KEYCLOAK_CALLBACK_URL || `${config.client.url}/auth/oauth/keycloak`
       }),
       oauth: JSON.stringify({
         defaults: JSON.stringify({
@@ -95,6 +97,12 @@ export const authenticationSeed = {
         twitter: JSON.stringify({
           key: process.env.TWITTER_CLIENT_ID,
           secret: process.env.TWITTER_CLIENT_SECRET
+        }),
+        keycloak: JSON.stringify({
+          appid: process.env.KEYCLOAK_APP_ID,
+          key: process.env.KEYCLOAK_CLIENT_ID,
+          secret: process.env.KEYCLOAK_CLIENT_SECRET,
+          scope: ['openid']
         })
       })
     }

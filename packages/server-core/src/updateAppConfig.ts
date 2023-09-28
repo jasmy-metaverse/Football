@@ -186,6 +186,7 @@ export const updateAppConfig = async (): Promise<void> => {
         if (oauth.google) dbAuthenticationConfig.oauth.google = JSON.parse(oauth.google)
         if (oauth.linkedin) dbAuthenticationConfig.oauth.linkedin = JSON.parse(oauth.linkedin)
         if (oauth.twitter) dbAuthenticationConfig.oauth.twitter = JSON.parse(oauth.twitter)
+        if (oauth.keycloak) dbAuthenticationConfig.oauth.keycloak = JSON.parse(oauth.keycloak)
         const authStrategies = ['jwt']
         for (let authStrategy of dbAuthenticationConfig.authStrategies) {
           const keys = Object.keys(authStrategy)

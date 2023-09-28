@@ -85,13 +85,13 @@ export const useLoadEngine = () => {
 
 const fetchMissingAvatar = async (user, avatarSpawnPose) => {
   const avatar = await AvatarService.getAvatar(user.avatar.id.value)
-  if (avatar && avatar.modelResource?.url)
+  if (avatar && avatar.modelResource?.url) {
     spawnLocalAvatarInWorld({
       avatarSpawnPose,
       avatarID: avatar.id,
       name: user.name.value
     })
-  else
+  } else
     NotificationService.dispatchNotify(
       'Your avatar is missing its model. Please change your avatar from the user menu.',
       { variant: 'error' }
@@ -103,6 +103,10 @@ export const useLocationSpawnAvatar = (spectate = false) => {
   const authState = useHookstate(getMutableState(AuthState))
 
   const spectateParam = useParams<{ spectate: UserId }>().spectate
+
+  // const fetchList = async () => {
+  //   return await AvatarService.newFetchAvatarList2()
+  // }
 
   useEffect(() => {
     if (spectate) {
@@ -126,17 +130,43 @@ export const useLocationSpawnAvatar = (spectate = false) => {
     const avatarDetails = user.avatar.value
     const spawnPoint = getSearchParamFromURL('spawnPoint')
 
+    // let foundAvatarList, wintos, avatarId, male, female
+    // setTimeout(async () => {
+    //   foundAvatarList = await fetchList()
+
+    //   male = foundAvatarList.filter((avatar) => avatar.name === 'male')
+    //   female = foundAvatarList.filter((avatar) => avatar.name === 'female')
+
+    //   if (localStorage.getItem('keycloakUser')) {
+    //     if (localStorage.getItem('ComfirmSelected')) {
+    //       avatarId = localStorage.getItem('ComfirmSelected')
+    //     } else {
+    //       wintos = foundAvatarList.filter((avatar) => avatar.name === 'WintosJR1')
+    //       avatarId = wintos[0].id
+    //     }
+    //   } else {
+    //     if (localStorage.getItem('ComfirmSelected')) {
+    //       avatarId = localStorage.getItem('ComfirmSelected')
+    //     } else {
+    //       if (avatarDetails.name != male[0].name && avatarDetails.name != female[0].name) {
+    //         avatarId = male[0].id
+    //       } else {
+    //         avatarId = user.avatar.id.value
+    //       }
+    //     }
+    //   }
+
     const avatarSpawnPose = spawnPoint
       ? getSpawnPoint(spawnPoint, Engine.instance.userId)
       : getRandomSpawnPoint(Engine.instance.userId)
-
-    if (avatarDetails.modelResource?.url)
+    if (avatarDetails.modelResource?.url) {
       spawnLocalAvatarInWorld({
         avatarSpawnPose,
         avatarID: user.avatar.id.value,
         name: user.name.value
       })
-    else fetchMissingAvatar(user, avatarSpawnPose)
+    } else fetchMissingAvatar(user, avatarSpawnPose)
+    // }, 100)
   }, [sceneLoaded, authState.user, authState.user?.avatar, spectateParam])
 }
 
@@ -165,7 +195,17 @@ export const usePortalTeleport = () => {
       }
 
       if (activePortal.redirect) {
-        window.location.href = engineState.publicPath.value + '/location/' + activePortal.location
+        // window.location.href = engineState.publicPath.value + '/location/' + activePortal.location
+        // if (activePortal.location === 'dancing') window.location.href = process.env.VITE_PORTAL_LOCATION
+        // else window.location.href = process.env.VITE_PORTAL_SHRINE_LOCATION
+        if (activePortal.location === 'dancing')
+          window.location.href = `${process.env.VITE_PORTAL_LOCATION}?code=${localStorage.getItem(
+            'userCode'
+          )}&&username=${localStorage.getItem('username')}&&avatarname=${localStorage.getItem('avatarname')}`
+        else if (activePortal.location === 'shrine')
+          window.location.href = `${process.env.VITE_PORTAL_SHRINE_LOCATION}?code=${localStorage.getItem(
+            'userCode'
+          )}&&username=${localStorage.getItem('username')}&&avatarname=${localStorage.getItem('avatarname')}`
         return
       }
 

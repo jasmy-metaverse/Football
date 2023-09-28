@@ -88,6 +88,7 @@ export class Authentication<T = AdminAuthSettingDataType> extends Service<T> {
       if (oauth.google) returned.oauth.google = JSON.parse(oauth.google)
       if (oauth.linkedin) returned.oauth.linkedin = JSON.parse(oauth.linkedin)
       if (oauth.twitter) returned.oauth.twitter = JSON.parse(oauth.twitter)
+      if (oauth.keycloak) returned.oauth.keycloak = JSON.parse(oauth.keycloak)
       return returned
     })
     return {

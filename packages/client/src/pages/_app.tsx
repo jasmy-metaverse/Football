@@ -24,8 +24,10 @@ Ethereal Engine. All Rights Reserved.
 */
 
 // import * as chapiWalletPolyfill from 'credential-handler-polyfill'
+import CryptoJS from 'crypto-js'
 import { SnackbarProvider } from 'notistack'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 
 import { AdminCoilSettingService } from '@etherealengine/client-core/src/admin/services/Setting/CoilSettingService'
 import { initGA, logPageView } from '@etherealengine/client-core/src/common/analytics'
@@ -38,7 +40,8 @@ import { ProjectService, ProjectState } from '@etherealengine/client-core/src/co
 import Debug from '@etherealengine/client-core/src/components/Debug'
 import InviteToast from '@etherealengine/client-core/src/components/InviteToast'
 import { theme } from '@etherealengine/client-core/src/theme'
-import { AuthState } from '@etherealengine/client-core/src/user/services/AuthService'
+import { AuthService, AuthState } from '@etherealengine/client-core/src/user/services/AuthService'
+import { AvatarService } from '@etherealengine/client-core/src/user/services/AvatarService'
 import GlobalStyle from '@etherealengine/client-core/src/util/GlobalStyle'
 import { AudioEffectPlayer } from '@etherealengine/engine/src/audio/systems/MediaSystem'
 import { matches } from '@etherealengine/engine/src/common/functions/MatchesUtils'
@@ -57,6 +60,7 @@ declare module '@mui/styles/defaultTheme' {
 }
 
 /** @deprecated see https://github.com/EtherealEngine/etherealengine/issues/6485 */
+
 const AppPage = ({ route }: { route: string }) => {
   const notistackRef = useRef<SnackbarProvider>()
   const authState = useHookstate(getMutableState(AuthState))
@@ -64,11 +68,48 @@ const AppPage = ({ route }: { route: string }) => {
   const [projectComponents, setProjectComponents] = useState<Array<any>>([])
   const [fetchedProjectComponents, setFetchedProjectComponents] = useState(false)
   const projectState = useHookstate(getMutableState(ProjectState))
-
+  const redirectUrl = process.env.VITE_PORTAL_LOCATION
   const initApp = useCallback(() => {
     initGA()
     logPageView()
   }, [])
+  const privateKey = 'abc'
+  const { search } = useLocation()
+  const handleCodeVerify = () => {
+    const query = window.location.search.substring(1)
+    const params = new URLSearchParams(query)
+    const code = params.get('code')
+    const username = params.get('username') || ''
+    const avatarname = params.get('avatarname') || ''
+    if (
+      avatarname === 'male' ||
+      avatarname === 'female' ||
+    ) {
+      const signer = CryptoJS.HmacSHA256(username, privateKey).toString()
+      if (signer === code) {
+        AuthService.updateUsername(Engine.instance.userId, username)
+        authState.user.isGuest.set(false)
+        localStorage.setItem('keycloakUser', 'true')
+        localStorage.setItem('usercode', 'true')
+        localStorage.setItem('username', username)
+        localStorage.setItem('userCode', signer)
+        localStorage.setItem('avatarname', avatarname)
+      } else {
+        window.location.href = redirectUrl
+      }
+    } else {
+      window.location.href = redirectUrl
+    }
+  }
+
+  useEffect(() => {
+    const UrlVerifyParams = search?.includes('?code' && 'username' && 'avatarname')
+    if (UrlVerifyParams) {
+      handleCodeVerify()
+    } else {
+      window.location.href = redirectUrl
+    }
+  }, [Engine.instance.userId])
 
   useEffect(() => {
     const receptor = (action): any => {
@@ -121,6 +162,59 @@ const AppPage = ({ route }: { route: string }) => {
   useEffect(() => {
     authState.isLoggedIn.value && AdminCoilSettingService.fetchCoil()
   }, [authState.isLoggedIn])
+
+  let socket
+  let socketInterval
+  const [socketConnectionState, setSocketConnectionState] = React.useState(false)
+
+  useEffect(() => {
+    if (!socketConnectionState) {
+      try {
+        socketConnection()
+      } catch {
+        console.log('Socket connection failed')
+      }
+    }
+
+    return () => clearInterval(socketInterval)
+  }, [socketConnectionState])
+
+  const socketConnection = () => {
+    socket = new WebSocket(`wss://${window.location.host}`)
+
+    socket.onopen = function () {
+      console.log('socket open')
+      socket.send('Ping Open')
+    }
+
+    socket.onmessage = function (event) {
+      console.log(`[message] Data received from server: ${event.data}`)
+      console.log('socket onmessage', event.data)
+      socket.send('Ping from dancing')
+    }
+
+    socket.onclose = function (event) {
+      setSocketConnectionState(false)
+      clearInterval(socketInterval)
+      if (event.wasClean) {
+        socketConnection()
+        console.log(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`)
+      } else {
+        // e.g. server process killed or network down
+        // event.code is usually 1006 in this case
+        console.log('[close] Connection died')
+      }
+    }
+
+    socket.onerror = function (error) {
+      setSocketConnectionState(false)
+      clearInterval(socketInterval)
+      console.log(`[error]`, error)
+      setTimeout(() => {
+        socketConnection()
+      }, 2000)
+    }
+  }
 
   return (
     <>

@@ -33,7 +33,8 @@ export const initialAuthState = {
   twitter: false,
   smsMagicLink: false,
   emailMagicLink: false,
-  didWallet: false
+  didWallet: false,
+  keycloak: false
 }
 
 export const initialOAuthConnectedState = {
@@ -42,5 +43,6 @@ export const initialOAuthConnectedState = {
   github: false,
   google: false,
   linkedin: false,
-  twitter: false
+  twitter: false,
+  keycloak: false
 }

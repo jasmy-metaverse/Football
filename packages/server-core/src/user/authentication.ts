@@ -25,6 +25,7 @@ Ethereal Engine. All Rights Reserved.
 
 import { AuthenticationService } from '@feathersjs/authentication'
 import { oauth } from '@feathersjs/authentication-oauth'
+import KeycloakStrategy from './strategies/keycloak'
 
 import { Application } from '../../declarations'
 import DiscordStrategy from './strategies/discord'
@@ -50,6 +51,7 @@ export default (app: Application): void => {
   authentication.register('github', new GithubStrategy(app) as any)
   authentication.register('linkedin', new LinkedInStrategy(app) as any)
   authentication.register('twitter', new TwitterStrategy(app) as any)
+  authentication.register('keycloak', new KeycloakStrategy(app) as any)
 
   app.use('authentication', authentication)
 

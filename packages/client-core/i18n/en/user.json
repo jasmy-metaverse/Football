@@ -119,7 +119,8 @@
       "btn-video": "Toggle Video",
       "btn-faceTracking": "Face Tracking",
       "btn-screenShare": "Share Screen",
-      "btn-chat": "World Chat"
+      "btn-chat": "World Chat",
+      "worldChat": "World Chat..."
     },
     "share": {
       "lbl-share": "Share",
@@ -183,7 +184,10 @@
       "client": "Client",
       "studio": "Studio",
       "admin": "Admin",
-      "windowsPerformanceHelp": "Windows OS Performance"
+      "windowsPerformanceHelp": "Windows OS Performance",
+      "graphicsPerfomanceIssue":"If you're experiencing performance issues, and you're running on a machine with Nvidia graphics, try the following.",
+      "graphicsPerformanceSolution":"Open the Nvidia Control Panel, select Chrome, make sure 'High Performance' is selected. ",
+      "settingGraphics":"In settings for Windows 10/11, search for the 'Graphics' preference on AMD/Nvidia for Chrome."
     },
     "profile": {
       "lbl-profile": "Profile",
@@ -194,6 +198,9 @@
       "inviteCode": "Invite Code",
       "youAreAn": "You are an",
       "youAreA": "You are a",
+      "youAreAGuest":"You are a Guest",
+      "youAreAnAdmin":"You are an Admin",
+      "youAreAUser":"You are a User",
       "showUserId": "Show User ID",
       "hideUserId": "Hide User ID",
       "showApiKey": "Show API key",
@@ -217,6 +224,7 @@
       "requestVC": "Request a VC",
       "addSocial": "Connect your Social Logins",
       "removeSocial": "Remove Social Logins",
+      "termsNConditions":"Terms & Conditions",
       "connections": {
         "title": "Connections",
         "ipError": "Can not remove active Identity Provider",

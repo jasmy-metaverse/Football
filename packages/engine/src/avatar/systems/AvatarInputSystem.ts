@@ -23,6 +23,7 @@ All portions of the code written by the Ethereal Engine team are Copyright © 20
 Ethereal Engine. All Rights Reserved.
 */
 
+import { RigidBody, Vector3 as VT } from '@dimforge/rapier3d-compat'
 import { Quaternion } from 'three'
 import { Vector3 } from 'three'
 
@@ -56,12 +57,15 @@ import { getInteractionGroups } from '../../physics/functions/getInteractionGrou
 import { boxDynamicConfig } from '../../physics/functions/physicsObjectDebugFunctions'
 import { SceneQueryType } from '../../physics/types/PhysicsTypes'
 import { RendererState } from '../../renderer/RendererState'
+import { TransformComponent } from '../../transform/components/TransformComponent'
 import { hasMovementControls, XRState } from '../../xr/XRState'
 import { AvatarControllerComponent } from '.././components/AvatarControllerComponent'
 import { AvatarTeleportComponent } from '.././components/AvatarTeleportComponent'
 import { autopilotSetPosition } from '.././functions/autopilotFunctions'
 import { translateAndRotateAvatar } from '.././functions/moveAvatar'
 import { AvatarAxesControlScheme, AvatarInputSettingsState } from '.././state/AvatarInputSettingsState'
+import { changeAvatarAnimationState } from '../animation/AvatarAnimationGraph'
+import { AvatarStates } from '../animation/Util'
 
 const _quat = new Quaternion()
 
@@ -160,6 +164,49 @@ const onKeyP = () => {
   getMutableState(RendererState).debugEnable.set(!getMutableState(RendererState).debugEnable.value)
 }
 
+const kickFunction = (delay: number = 0) => {
+  setTimeout(() => {
+    const world = Engine.instance.physicsWorld
+    const ball = world.bodies.map.data.find((arr) => arr.isDynamic()) as RigidBody
+    const bT = getComponent(ball.userData.entity as Entity, TransformComponent).position
+    const entity = Engine.instance.localClientEntity
+    const aT = getComponent(entity, TransformComponent).position
+    const forcePower = process.env.VITE_FORCE_POWER
+    const dx = bT.x - aT.x
+    const dz = bT.z - aT.z
+    const distance = Math.sqrt(dx * dx + dz * dz)
+    if (distance < parseFloat(process.env.VITE_KICK_DISTANCE)) {
+      const forceY = (1.7 - distance) * (forcePower / 3)
+      const absSum = Math.abs(dx) + Math.abs(dz)
+      const forceX = (dx / absSum) * forcePower
+      const forceZ = (dz / absSum) * forcePower
+      const force = new VT(forceX, forceY, forceZ)
+      ball.applyImpulse(force, true)
+    }
+  }, delay)
+}
+
+const resetBall = () => {
+  const world = Engine.instance.physicsWorld
+  world.bodies.map.data.find((arr) => {
+    if (arr.isDynamic()) {
+      arr.setLinvel(new VT(0, 0, 0))
+      arr.setAngvel(new VT(0, 0, 0))
+      arr.setTranslation(new VT(7, 0.8, -12.8))
+    }
+  })
+}
+
+const onKeyK = () => {
+  const entity = Engine.instance.localClientEntity
+  changeAvatarAnimationState(entity, AvatarStates.KICK)
+  kickFunction(0)
+}
+
+const onKeyL = () => {
+  resetBall()
+}
+
 const isAvatarClicked = () => {
   const hits = Physics.castRayFromCamera(
     Engine.instance.camera,
@@ -256,6 +303,8 @@ const execute = () => {
       inputSource.source.gamepad?.mapping === 'standard' || inputSource.source.gamepad?.mapping === ''
 
     if (buttons.KeyE?.down) onInteract()
+    if (buttons.KeyK?.down) onKeyK()
+    if (buttons.KeyL?.down) onKeyL()
 
     if (standardGamepad && buttons[StandardGamepadButton.ButtonY]?.down) {
       onInteract()
@@ -280,7 +329,8 @@ const execute = () => {
 
     if (isDev) {
       if (buttons.KeyO?.down) onKeyO()
-      if (buttons.KeyP?.down) onKeyP()
+      // To enable/disable Polygon view
+      // if (buttons.KeyP?.down) onKeyP()
     }
 
     if (!hasMovementControls()) return

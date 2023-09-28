@@ -49,6 +49,7 @@ import Fab from '@mui/material/Fab'
 import { AppAction } from '../../common/services/AppService'
 import { getUserAvatarThumbnail } from '../../user/functions/useUserAvatarThumbnail'
 import { useShelfStyles } from '../Shelves/useShelfStyles'
+import { isJsonString } from '../UserMediaWindow'
 import defaultStyles from './index.module.scss'
 import styles from './index.module.scss'
 
@@ -216,7 +217,7 @@ export const InstanceChat = ({
   styles = defaultStyles,
   MessageButton = MessageIcon,
   CloseButton = CloseIcon,
-  newMessageLabel = 'World Chat...'
+  newMessageLabel = 'ワールドチャット...'
 }: InstanceChatProps): any => {
   const chatWindowOpen = useHookstate(false)
   const unreadMessages = useHookstate(false)
@@ -323,7 +324,11 @@ export const InstanceChat = ({
                     <div key={message.id} className={`${styles.selfEnd} ${styles.noMargin}`}>
                       <div className={styles.dFlex}>
                         <div className={`${styles.msgNotification} ${styles.mx2}`}>
-                          <p className={styles.shadowText}>{message.text}</p>
+                          <p className={styles.shadowText}>
+                            {isJsonString(message.text.split('joined')[0])
+                              ? `${JSON.parse(message.text.split('joined')[0]).name} joined`
+                              : message.text}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -337,11 +342,19 @@ export const InstanceChat = ({
                         >
                           <div className={styles.msgWrapper}>
                             {messages[index - 1] && messages[index - 1].isNotification ? (
-                              <h3 className={styles.sender}>{message.sender.name}</h3>
+                              <h3 className={styles.sender}>
+                                {isJsonString(message.sender.name)
+                                  ? JSON.parse(message.sender.name).name
+                                  : message.sender.name}
+                              </h3>
                             ) : (
                               messages[index - 1] &&
                               message.senderId !== messages[index - 1].senderId && (
-                                <h3 className={styles.sender}>{message.sender.name}</h3>
+                                <h3 className={styles.sender}>
+                                  {isJsonString(message.sender.name)
+                                    ? JSON.parse(message.sender.name).name
+                                    : message.sender.name}
+                                </h3>
                               )
                             )}
                             <p className={styles.text}>{message.text}</p>

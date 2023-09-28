@@ -1,0 +1,113 @@
+{
+  "components": {
+    "cancel": "Cancel",
+    "confirm": "更新",
+    "select": "Select",
+    "enter": "Enter",
+    "processing": "Processing",
+    "retry": "Retry"
+  },
+  "tooltip": {
+    "pressKey": "Press {{tip}} to {{message}}"
+  },
+  "toast": {
+    "joined": "が参加しました",
+    "left": "left"
+  },
+  "loader": {
+    "connecting": "Connecting...",
+    "authenticating": "Authenticating...",
+    "starting": "Starting...",
+    "loadingLocation": "Loading locations...",
+    "loadingEngine": "Loading engine...",
+    "loadingEditor": "Loading editor...",
+    "loadingRoutes": "Loading routes...",
+    "loadingRoute": "Loading route...",
+    "loadingAuth": "Loading auth routes...",
+    "loadingAdmin": "Loading admin routes...",
+    "loadingCustom": "Loading custom routes...",
+    "loadingAllowed": "Loading allowed routes...",
+    "loadingXRSystems": "Loading immersive session...",
+    "connectingToWorld": "ワールド接続中...",
+    "connectingToMedia": "メディア接続中...",
+    "entering": "Entering world...",
+    "loading": "ロード中...",
+    "objectRemaining": "{{count}} object remaining",
+    "objectRemainingPlural": "{{count}} objects remaining",
+    "loadingObjects": "オブジェクトのロード中",
+    "loadingComplete": "ロード完了",
+    "joiningWorld": "メタバース空間に入ります",
+    "editor": "Loading Editor",
+    "offline": "Loading Offline",
+    "auth": "Loading Auth"
+  },
+  "alert": {
+    "eventWasSuccess": "Event was successful",
+    "errorWasEncountered": "An error was encountered",
+    "eventInProgress": "Event in progress",
+    "seconds": "seconds",
+    "cancelCountdown": "Closing this modal will cancel the countdown"
+  },
+  "debug": {
+    "refresh": "Refresh",
+    "stats": "Stats",
+    "debugOptions": "Debug Options",
+    "debug": "Debug Helpers",
+    "preSystems": "Pre Systems",
+    "simulation": "Simulation Group",
+    "subSystems": "Sub System",
+    "postSystems": "Post Systems",
+    "nodeHelperDebug": "Node Helper",
+    "entityTree": "Entity Tree",
+    "gridDebug": "Grid",
+    "tick": "Tick",
+    "state": "State",
+    "systems": "Systems",
+    "entities": "Entities",
+    "networks": "Networks"
+  },
+  "recording": {
+    "videoRecorder": "Video recorder",
+    "waitingForPermissions": "Waiting for permissions",
+    "selectVideoSource": "Select video source",
+    "screen": "Screen",
+    "camera": "Camera",
+    "microphone": "Microphone",
+    "startRecording": "Start recording",
+    "pauseRecording": "Pause recording",
+    "resumeRecording": "Resume recording",
+    "stopRecording": "Stop recording"
+  },
+  "typing": "Typing...",
+  "instanceServer": {
+    "browserError": "Browser Error",
+    "browserErrorMessage": "Your browser does not support storage in private browsing mode. Either try another browser, or exit private browsing mode.",
+    "noAvailableServers": "No Available Servers",
+    "noAvailableServersMessage": "There aren't any servers available for you to connect to. Attempting to re-connect in",
+    "worldDisconnected": "World disconnected",
+    "worldDisconnectedMessage": "You've lost your connection with the world. We'll try to reconnect before the following time runs out, otherwise you'll be forwarded to a different instance.",
+    "webGLNotEnabled": "WebGL not enabled",
+    "webGLNotEnabledMessage": "Your browser does not support WebGL, or it is disabled. Please enable WebGL or consider upgrading to the latest version of your browser.",
+    "youKickedFromWorld": "You've been kicked from the world",
+    "youKickedFromWorldMessage": "You were kicked from this world for the following reason",
+    "invalidLocation": "Invalid location",
+    "cantFindLocation": "We can't find the location",
+    "notAuthorizedAtLocationTitle": "Not Authorized at this location",
+    "notAuthorizedAtLocation": "You are not authorized to be at this location",
+    "misspelledOrNotExist": "It may be misspelled, or it may not exist.",
+    "loading": "loading",
+    "low-frame-error": "Detected a poor perfomance consider enabling Use Hardware acceleration in your browser and relauch your browser",
+    "low-frame-title": "Enable hardware acceleration for better experience!"
+  },
+  "ar": {
+    "placeScene": "Place Scene",
+    "doneTrigger": "Hold Trigger To Confirm",
+    "done": "Done"
+  },
+  "error": {
+    "loading-error": "Failed to load user data",
+    "validation-error": "Please input valid {{type}}",
+    "login-error": "Failed to login"
+  },
+  "exploreRedirect": "Explore Worlds"
+}

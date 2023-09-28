@@ -87,6 +87,7 @@ const LoadingDetailViewStyle = () => {
         text-align: center;
         padding: 2px;
         color: #FFFFFF;
+        width: 100%;
       }
       
     `}</style>

@@ -54,7 +54,7 @@ export default (app: Application) => {
       type: {
         type: DataTypes.STRING,
         allowNull: false,
-        values: ['email', 'sms', 'password', 'discord', 'github', 'google', 'facebook', 'twitter', 'linkedin', 'auth0']
+        values: ['email', 'sms', 'password', 'discord', 'github', 'google', 'facebook', 'twitter', 'linkedin', 'auth0','keycloak']
       }
     } as any as IdentityProviderInterface,
     {

@@ -42,10 +42,10 @@ export const initializei18n = () => {
   const { namespace, resources } = getI18nConfigs(modules)
 
   i18n.use(LanguageDetector).use(initReactI18next).init({
-    fallbackLng: 'en',
+    fallbackLng: 'ja',
     ns: namespace,
     defaultNS: 'translation',
-    lng: 'en',
+    lng: 'ja',
     resources
   })
 }
